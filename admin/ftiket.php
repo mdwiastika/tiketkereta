@@ -22,7 +22,7 @@ function tambah($data)
     $stasiunal = htmlspecialchars($data["stasiun_awal"]);
     $stasiunar = htmlspecialchars($data["stasiun_akhir"]);
     $harga = " ";
-    $query = "INSERT INTO tiket VALUES ('','$idk','$idu','$nop','$nod','$harga','$jumlah','$tangggalb','$stasiunal','$stasiunar')";
+    $query = "INSERT INTO tiket VALUES ('','$idk','$idu','$nop','$nod','$harga','$jumlah','$tangggalb','$stasiunal','$stasiunar',' ')";
     mysqli_query($connect, $query);
     return mysqli_affected_rows($connect);
 }

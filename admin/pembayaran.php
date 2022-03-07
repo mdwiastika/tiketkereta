@@ -8,11 +8,20 @@ if ($_SESSION["role"] == "user") {
 }
 $id = $_SESSION["uid"];
 include_once "connect.php";
-include_once "ftiket.php";
-$query2 = mysqli_query($connect, "SELECT * FROM tiket_sementara AS s INNER JOIN tiket AS t ON t.id_kereta= s.id_kereta2 INNER JOIN kereta AS k ON k.id_ker= s.id_kereta2");
+include_once "fbayar.php";
+$query2 = mysqli_query($connect, "SELECT s.no_pesanan, t.jumlah, k.harga_ker, k.nama_ker, k.kelas_ker FROM tiket_sementara AS s INNER JOIN tiket AS t ON t.id_kereta= s.id_kereta2 INNER JOIN kereta AS k ON k.id_ker= s.id_kereta2 WHERE s.iduser= t.id_user AND s.no_pesanan= t.no_pesanan");
 $tiket = mysqli_fetch_assoc($query2);
 $query = mysqli_query($connect, "SELECT * FROM user WHERE id_user=$id");
 $user = mysqli_fetch_assoc($query);
+if (isset($_POST["submit"])) {
+    if (update($_POST) > 0) {
+        echo "<script>alert('data berhasil ditambahkan');
+        document.location.href = 'buktibayar.php';</script> ";
+    } else {
+        echo "<script>alert('data gagal ditambahkan');
+        document.location.href = 'pembayaran.php';</script> ";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -199,33 +208,37 @@ $user = mysqli_fetch_assoc($query);
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table style="margin-bottom: 10px;">
-                                    <tr>
-                                        <td>Nama</td>
-                                        <td>: <?= $user["nama"] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email</td>
-                                        <td>: <?= $user["email"] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nama Kereta</td>
-                                        <td>: <?= $tiket["nama_ker"] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jumlah Tiket</td>
-                                        <td>: <?= $tiket["jumlah"] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <?php
-                                        $harga = $tiket["jumlah"] * $tiket["harga_ker"]
-                                        ?>
-                                        <td>Total Harga</td>
-                                        <td>: <?= $harga ?></td>
-                                        <input type="hidden" name="no_pesanan">
-                                    </tr>
-
-                                </table>
+                                <form action="" method="POST">
+                                    <table style="margin-bottom: 10px;">
+                                        <tr>
+                                            <td>Nama</td>
+                                            <td>: <?= $user["nama"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>: <?= $user["email"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nama Kereta</td>
+                                            <td>: <?= $tiket["nama_ker"] ?> (<?= $tiket["kelas_ker"] ?>)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jumlah Tiket</td>
+                                            <td>: <?= $tiket["jumlah"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <?php
+                                            $harga = $tiket["jumlah"] * $tiket["harga_ker"]
+                                            ?>
+                                            <td>Total Harga</td>
+                                            <td>: Rp <?= number_format($harga, "0", "", ".");  ?></td>
+                                            <input type="hidden" value="<?= $harga ?>" name="hargatotal">
+                                            <input type="hidden" name="no_pesanan" value="<?= $tiket["no_pesanan"] ?>">
+                                            <input type="hidden" name="userid" id="userid" value="<?= $id ?>">
+                                        </tr>
+                                    </table>
+                                    <button type="submit" class="btn btn-primary" name="submit">Lanjutkan Pembayaran</button>
+                                </form>
                             </div>
                             <!-- /.card-body -->
                         </div>
