@@ -1,17 +1,31 @@
 <?php
-function update($data){
-global $connect;
-$harga = $data["hargatotal"];
-$pesan = $data["no_pesanan"];
-$uid= $data["userid"];
-$query= "UPDATE tiket SET harga = '$harga' WHERE id_user= $uid AND no_pesanan = $pesan";
-mysqli_query($connect, $query);
-return mysqli_affected_rows($connect);
+function update($data)
+{
+    global $connect;
+    $harga = $data["hargatotal"];
+    $pesan = $data["no_pesanan"];
+    $uid = $data["userid"];
+    $query = "UPDATE tiket SET harga = '$harga' WHERE id_user= $uid AND no_pesanan = $pesan";
+    mysqli_query($connect, $query);
+    return mysqli_affected_rows($connect);
 }
-function updategambar($data){
+function updategambar($data)
+{
     global $connect;
     $pesan = $data["no_pesanan"];
-$uid= $data["userid"];
+    $uid = $data["userid"];
+    $gambar = upload();
+    $jumlah = $data["jumlah"];
+    $id_kereta = $data["id_kereta"];
+    $kapasitas = $data["kapasitas"];
+    $hasil = $kapasitas - $jumlah;
+    $query2 = "UPDATE tiket SET bukti= '$gambar' WHERE id_user= $uid AND no_pesanan = $pesan";
+    mysqli_query($connect, $query2);
+    $query4 = "DELETE from tiket_sementara WHERE iduser= $uid";
+    mysqli_query($connect, $query4);
+    $query9 = "UPDATE kereta SET kapasitas= '$hasil' WHERE id_ker= $id_kereta";
+    mysqli_query($connect, $query9);
+    return mysqli_affected_rows($connect);
 }
 function upload()
 {
@@ -37,4 +51,3 @@ function upload()
 
     return $namabaru;
 }
-?>

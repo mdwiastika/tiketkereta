@@ -5,6 +5,12 @@ session_start();
 // if (!isset($_SESSION["login"])) {
 //     header("location: ../user/login.php");
 // }
+
+$id = $_SESSION["uid"];
+include_once "connect.php";
+include_once "fbayar.php";
+$query2 = mysqli_query($connect, "SELECT s.no_pesanan, t.jumlah, k.harga_ker, k.nama_ker, k.kelas_ker, k.id_ker, k.kapasitas FROM tiket_sementara AS s INNER JOIN tiket AS t ON t.id_kereta= s.id_kereta2 INNER JOIN kereta AS k ON k.id_ker= s.id_kereta2 WHERE s.iduser= t.id_user AND s.no_pesanan= t.no_pesanan");
+$tiket = mysqli_fetch_assoc($query2);
 if (isset($_POST["submit"])) {
     if (updategambar($_POST) > 0) {
         echo "<script>alert('data berhasil ditambahkan');
@@ -60,24 +66,24 @@ if (isset($_POST["submit"])) {
                 <div class="row">
                     <div class="col-12" style="font-family: roboto;">
                         <div class="container card shadow overflow-hidden mt-5 p-5" style="width: 70%;">
-                            <h3 class="text-center">Tambah Kereata</h3>
+                            <h3 class="text-center"></h3>
                             <hr />
-                            <form action="" method="POST">
+                            <form action="" method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
-                                    <label for="nama">Nama Kereta:</label>
-                                    <input type="text" class="form-control" id="nama" name="nama" required autocomplete="off">
+                                    <input type="hidden" name="no_pesanan" value="<?= $tiket["no_pesanan"] ?>">
+                                    <input type="hidden" name="userid" id="userid" value="<?= $id ?>">
+                                    <input type="hidden" name="id_kereta" value="<?= $tiket["id_ker"] ?>">
+                                    <input type="hidden" name="jumlah" value="<?= $tiket["jumlah"] ?>">
+                                    <input type="hidden" name="kapasitas" id="kapasitas" value="<?= $tiket["kapasitas"] ?>">
                                 </div>
                                 <div class="form-group">
-                                    <label for="stok">Harga per orang:</label>
-                                    <input type="number" class="form-control" id="stok" name="harga" required autocomplete="off">
+                                    <label for="stok" style="display: inline-block;">QR CODE:</label>
+                                    <img src="../qrcode.jpeg" alt="" style="max-width: 100px; display: inline-block;">
                                 </div>
                                 <div class="form-group">
-                                    <label for="stok">Kelas:</label>
-                                    <input type="text" class="form-control" id="stok" name="kelas" required autocomplete="off">
-                                </div>
-                                <div class="form-group">
-                                    <label for="stok">Kapasitas:</label>
-                                    <input type="text" class="form-control" id="stok" name="kapasitas" required autocomplete="off">
+                                    <label for="gambar">Kirim Foto Bukti Pembayaran:</label>
+                                    <input type="file" class="form-control" id="gambar" name="image" autocomplete="off" onchange="readURL(this);" style="max-width: 150px;">
+                                    <img id="blah" src="http://placehold.it/180" alt="your image" />
                                 </div>
                                 <button type="submit" class="btn btn-primary" name="submit">Submit</button>
                             </form>
@@ -110,6 +116,7 @@ if (isset($_POST["submit"])) {
     <script src="dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
+    <script src="image.js"></script>
 </body>
 
 </html>
