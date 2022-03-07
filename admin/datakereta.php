@@ -181,7 +181,7 @@ $kereta = kereta("SELECT * FROM kereta")
         </div>
         <!-- /.row -->
 
-        <h3><a class="btn btn-info mt-3 mb-3 ml-4" href="tambahbarang.php" role="button" style="font-family: roboto; font-size: large;"><i class="fas fa-plus"></i> Tambah Kereta</a></h3>
+        <h3><a class="btn btn-info mt-3 mb-3 ml-4" href="tambahkereta.php" role="button" style="font-family: roboto; font-size: large;"><i class="fas fa-plus"></i> Tambah Kereta</a></h3>
 
         <div class="row">
           <div class="col-12">
@@ -198,6 +198,7 @@ $kereta = kereta("SELECT * FROM kereta")
                       <th>Nama</th>
                       <th>Kelas</th>
                       <th>Harga</th>
+                      <th>Kapasitas</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -211,9 +212,10 @@ $kereta = kereta("SELECT * FROM kereta")
                         <td><?= $data["nama_ker"] ?></td>
                         <td><?= $data["kelas_ker"] ?></td>
                         <td><?= $data["harga_ker"] ?></td>
+                        <td><?= $data["kapasitas"] ?></td>
                         <td>
-                          <div class="btn-group"><a class="btn btn-primary mr-1" href="ubahdata.php?id=<?= $data["id"]; ?>" role="button"><i class="fas fa-edit"></i></a>
-                            <a class="btn btn-danger " href="hapus.php?id=<?= $data["id"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
+                          <div class="btn-group">
+                            <a class="btn btn-danger " href="hapuskereta.php?id=<?= $data["id_ker"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
                           </div>
                         </td>
                       </tr>

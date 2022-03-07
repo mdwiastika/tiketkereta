@@ -1,35 +1,8 @@
 <?php
-function kereta($query)
-{
-    global $connect;
-    $result = mysqli_query($connect, $query);
-    $array = [];
-    while ($hi = mysqli_fetch_assoc($result)) {
-
-        $array[] = $hi;
-    }
-    return $array;
-}
-function tambah($data)
-{
-    global $connect;
-    $harga = htmlspecialchars($data["harga"]);
-    $kelas = htmlspecialchars($data["kelas"]);
-    $nama = htmlspecialchars($data["nama"]);
-    $tempat = htmlspecialchars($data["kapasitas"]);
-    $query = "INSERT INTO kereta VALUES ('','$nama','$harga','$kelas','$tempat')";
-    mysqli_query($connect, $query);
-    return mysqli_affected_rows($connect);
-}
-function hapus($id)
-{
-    global $connect;
-    mysqli_query($connect, "DELETE FROM kereta WHERE id_ker= $id");
-    return mysqli_affected_rows($connect);
-}
 function registrasi($data)
 {
     global $connect;
+    $namalengkap = $data["nama_lengkap"];
     $username = strtolower(stripslashes($data["username"]));
     $password = mysqli_real_escape_string($connect, $data["password"]);
     $password2 = mysqli_real_escape_string($connect, $data["password2"]);
@@ -61,6 +34,6 @@ function registrasi($data)
     // enkripsi password (password yang ingin di acak, )
     $password = password_hash($password, PASSWORD_DEFAULT);
     // menambah user ke database
-    mysqli_query($connect, "INSERT INTO user VALUES('','$username','$email', '$password', '$role')");
+    mysqli_query($connect, "INSERT INTO user VALUES('','$email','$username', '$password', '$role','$namalengkap')");
     return mysqli_affected_rows($connect);
 }

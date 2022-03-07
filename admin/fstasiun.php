@@ -1,5 +1,5 @@
 <?php
-function kereta($query)
+function stasiun($query)
 {
     global $connect;
     $result = mysqli_query($connect, $query);
@@ -13,18 +13,17 @@ function kereta($query)
 function tambah($data)
 {
     global $connect;
-    $harga = htmlspecialchars($data["harga"]);
-    $kelas = htmlspecialchars($data["kelas"]);
+    $code = htmlspecialchars($data["code_stasiun"]);
+    $lokasi = htmlspecialchars($data["lokasi"]);
     $nama = htmlspecialchars($data["nama"]);
-    $tempat = htmlspecialchars($data["kapasitas"]);
-    $query = "INSERT INTO kereta VALUES ('','$nama','$harga','$kelas','$tempat')";
+    $query = "INSERT INTO stasiun VALUES ('','$code','$lokasi','$nama')";
     mysqli_query($connect, $query);
     return mysqli_affected_rows($connect);
 }
 function hapus($id)
 {
     global $connect;
-    mysqli_query($connect, "DELETE FROM kereta WHERE id_ker= $id");
+    mysqli_query($connect, "DELETE FROM stasiun WHERE id_sta= $id");
     return mysqli_affected_rows($connect);
 }
 function registrasi($data)

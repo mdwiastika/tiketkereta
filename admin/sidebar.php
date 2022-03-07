@@ -65,30 +65,6 @@
                     </a>
                 </li>
                 <li class="nav-item active">
-                    <a href="daftarstok.php" class="nav-link">
-                        <i class="nav-icon fas fa-layer-group"></i>
-                        <p>
-                            Daftar Stok
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="deskripsi.php" class="nav-link">
-                        <i class="nav-icon fas fa-tags"></i>
-                        <p>
-                            Deskripsi
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="datapembelian.php" class="nav-link">
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>
-                            Daftar Pembelian
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item active">
                     <a href="registrasi.php" class="nav-link">
                         <i class="nav-icon fas fa-user-plus"></i>
                         <p>
