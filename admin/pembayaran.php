@@ -4,12 +4,15 @@ if (!isset($_SESSION["login"])) {
     header("location: login-v2.php");
 }
 if ($_SESSION["role"] == "user") {
-    header("location: datastasiun.php");
+    header("location: datatiket.php");
 }
 $id = $_SESSION["uid"];
 include_once "connect.php";
-include_once "fstasiun.php";
-$stasiun = stasiun("SELECT * FROM stasiun")
+include_once "ftiket.php";
+$query2 = mysqli_query($connect, "SELECT * FROM tiket_sementara AS s INNER JOIN tiket AS t ON t.id_kereta= s.id_kereta2 INNER JOIN kereta AS k ON k.id_ker= s.id_kereta2");
+$tiket = mysqli_fetch_assoc($query2);
+$query = mysqli_query($connect, "SELECT * FROM user WHERE id_user=$id");
+$user = mysqli_fetch_assoc($query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -188,48 +191,40 @@ $stasiun = stasiun("SELECT * FROM stasiun")
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
-
-                <h3><a class="btn btn-info mt-3 mb-3 ml-4" href="tambahstasiun.php" role="button" style="font-family: roboto; font-size: large;"><i class="fas fa-plus"></i> Tambah Stasiun</a></h3>
-
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Data Stasiun</h3>
+                                <h3 class="card-title">Data Kereta</h3>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="example1" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Codename</th>
-                                            <th>Nama Stasiun</th>
-                                            <th>Lokasi</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <table style="margin-bottom: 10px;">
+                                    <tr>
+                                        <td>Nama</td>
+                                        <td>: <?= $user["nama"] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>: <?= $user["email"] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nama Kereta</td>
+                                        <td>: <?= $tiket["nama_ker"] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah Tiket</td>
+                                        <td>: <?= $tiket["jumlah"] ?></td>
+                                    </tr>
+                                    <tr>
                                         <?php
-                                        $a = 1;
-                                        foreach ($stasiun as $data) :
+                                        $harga = $tiket["jumlah"] * $tiket["harga_ker"]
                                         ?>
-                                            <tr>
-                                                <td><?= $a ?></td>
-                                                <td><?= $data["code_sta"] ?></td>
-                                                <td><?= $data["nama_sta"] ?></td>
-                                                <td><?= $data["lokasi"] ?></td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-danger " href="hapusstasiun.php?id=<?= $data["id_sta"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php
-                                            $a++;
-                                        endforeach;
-                                        ?>
-                                    </tbody>
+                                        <td>Total Harga</td>
+                                        <td>: <?= $harga ?></td>
+                                        <input type="hidden" name="no_pesanan">
+                                    </tr>
+
                                 </table>
                             </div>
                             <!-- /.card-body -->
@@ -272,25 +267,6 @@ $stasiun = stasiun("SELECT * FROM stasiun")
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
-    </script>
 </body>
 
 </html>

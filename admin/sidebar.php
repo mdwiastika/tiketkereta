@@ -65,7 +65,7 @@
                     </a>
                 </li>
                 <li class="nav-item active">
-                    <a href="registrasi.php" class="nav-link">
+                    <a href="register-v2.php" class="nav-link">
                         <i class="nav-icon fas fa-user-plus"></i>
                         <p>
                             Registrasi

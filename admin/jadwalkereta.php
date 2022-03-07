@@ -1,4 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION["login"])) {
+    header("location: login-v2.php");
+}
+if ($_SESSION["role"] == "user") {
+    header("location: index.php");
+}
+$id = $_SESSION["uid"];
 include_once "connect.php";
 include_once "fjadwal.php";
 $jadwal = jadwal("SELECT * FROM jadwal AS j INNER JOIN kereta AS k ON j.id_kereta= k.id_ker");

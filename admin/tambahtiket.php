@@ -1,17 +1,28 @@
 <?php
+session_start();
+if (!isset($_SESSION["login"])) {
+    header("location: login-v2.php");
+}
+if ($_SESSION["role"] == "user") {
+    header("location: index.php");
+}
+$id = $_SESSION["uid"];
 include_once "connect.php";
 include_once "ftiket.php";
-session_start();
-// if (!isset($_SESSION["login"])) {
-//     header("location: ../user/login.php");
-// }
+$query = mysqli_query($connect, "SELECT max(no_duduk) as duduk FROM tiket");
+$data = mysqli_fetch_array($query);
+$kodeBarang = $data['duduk'];
+$urutan = (int)$kodeBarang;
+$urutan++;
+$kodeBarang = sprintf("%01s", $urutan);
+$pesanan = date("dmyHis") . $id;
 if (isset($_POST["submit"])) {
-    if (tambah($_POST) > 0) {
+    if (tambah($_POST) > 0 & update($_POST) > 0) {
         echo "<script>alert('data berhasil ditambahkan');
-        document.location.href = 'jadwalkereta.php';</script> ";
+        document.location.href = 'pembayaran.php';</script> ";
     } else {
         echo "<script>alert('data gagal ditambahkan');
-        document.location.href = 'jadwalkereta.php';</script> ";
+        document.location.href = 'datatiket.php';</script> ";
     }
 }
 ?>
@@ -64,30 +75,32 @@ if (isset($_POST["submit"])) {
                             <hr />
                             <form action="" method="POST">
                                 <div class=" form-group">
-                                    <input type="hidden" value="1" name="id_user">
+                                    <input type="hidden" name="no_pesanan" id="pesanan" value="<?= $pesanan ?>">
+                                    <input type="hidden" name="no_duduk" value="<?= $kodeBarang ?>">
+                                    <input type="hidden" value="<?= $id ?>" name="id_user">
                                     <label for="kategori">Nama Kereta:</label>
-                                    <select id="kategori" class="form-control" name="nama_ker" required autocomplete="off">
+                                    <select id="kategori" class="form-control" name="id_kereta" required autocomplete="off">
                                         <option value=" ">-- Pilih Kereta --</option>
                                         <?php
                                         $query = mysqli_query($connect, "SELECT * FROM jadwal AS j INNER JOIN kereta AS k on j.id_kereta=k.id_ker");
                                         while ($data = mysqli_fetch_assoc($query)) { ?>
-                                            <option value="<?php echo $data['id_kereta']; ?>"><?php echo $data["nama_ker"]; ?> (<?= $data["kelas_ker"]; ?>)</option>
+                                            <option value="<?php echo $data['id_kereta']; ?>"><?php echo $data["nama_ker"]; ?> (<?= $data["kelas_ker"]; ?>) - <?= $data["harga_ker"] ?></option>
                                         <?php
                                         }
                                         ?>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="deskripsi"> Tanggal Berangkat:</label>
-                                    <input type="text" class="form-control" id="deskripsi" name="tanggal_berangkat" required autocomplete="off">
+                                    <label for="deskripsi"> Jumlah Tiket:</label>
+                                    <input type="number" class="form-control" id="deskripsi" name="jumlah" required autocomplete="off">
                                 </div>
                                 <div class="form-group">
-                                    <label for="deskripsi">Sampai (waktu):</label>
-                                    <input type="text" class="form-control" id="deskripsi" name="sampai" required autocomplete="off">
+                                    <label for="deskripsi"> Tanggal Berangkat:</label>
+                                    <input type="date" class="form-control" id="deskripsi" name="tanggal_berangkat" required autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="stok">Dari:</label>
-                                    <select id="kategori" class="form-control" name="dari" required autocomplete="off">
+                                    <select id="kategori" class="form-control" name="stasiun_awal" required autocomplete="off">
                                         <option value=" ">-- Pilih Stasiun --</option>
                                         <?php
                                         $query = mysqli_query($connect, "SELECT * FROM stasiun");
@@ -100,7 +113,7 @@ if (isset($_POST["submit"])) {
                                 </div>
                                 <div class="form-group">
                                     <label for="stok">Tujuan:</label>
-                                    <select id="kategori" class="form-control" name="tujuan" required autocomplete="off">
+                                    <select id="kategori" class="form-control" name="stasiun_akhir" required autocomplete="off">
                                         <option value=" ">-- Pilih Stasiun --</option>
                                         <?php
                                         $query = mysqli_query($connect, "SELECT * FROM stasiun");
@@ -142,6 +155,13 @@ if (isset($_POST["submit"])) {
     <script src="dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("select[name=id_kereta]").on("change", function() {
+
+            });
+        });
+    </script>
 </body>
 
 </html>

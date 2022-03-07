@@ -1,4 +1,12 @@
 <?php
+session_start();
+if (!isset($_SESSION["login"])) {
+  header("location: login-v2.php");
+}
+if ($_SESSION["role"] == "user") {
+  header("location: index.php");
+}
+$id = $_SESSION["uid"];
 include_once "connect.php";
 include_once "fkereta.php";
 $kereta = kereta("SELECT * FROM kereta")
