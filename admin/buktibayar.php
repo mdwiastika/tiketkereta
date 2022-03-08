@@ -14,10 +14,10 @@ $tiket = mysqli_fetch_assoc($query2);
 if (isset($_POST["submit"])) {
     if (updategambar($_POST) > 0) {
         echo "<script>alert('data berhasil ditambahkan');
-        document.location.href = 'datakereta.php';</script> ";
+        document.location.href = 'datatiket.php';</script> ";
     } else {
         echo "<script>alert('data gagal ditambahkan');
-        document.location.href = 'datakereta.php';</script> ";
+        document.location.href = 'datatiket.php';</script> ";
     }
 }
 ?>

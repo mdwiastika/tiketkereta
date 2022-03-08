@@ -95,7 +95,7 @@ if (isset($_POST["login"])) {
         </form>
         <!-- /.social-auth-links -->
         <p class="mb-0">
-          <a href="register-v2.php" class="text-center">Register a new membership</a>
+          <a href="register-v3.php" class="text-center">Register a new membership</a>
         </p>
       </div>
       <!-- /.card-body -->

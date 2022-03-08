@@ -34,7 +34,7 @@
                 </li>
                 <li class="nav-item active">
                     <a href="datastasiun.php" class="nav-link">
-                        <i class="nav-icon fas fa-table"></i>
+                        <i class="nav-icon fas fa-torii-gate"></i>
                         <p>
                             Daftar Stasiun
                         </p>
@@ -42,7 +42,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="datakereta.php" class="nav-link">
-                        <i class="nav-icon fas fa-plus-square"></i>
+                        <i class="nav-icon fas fa-subway"></i>
                         <p>
                             Daftar Kereta
                         </p>
@@ -50,7 +50,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="jadwalkereta.php" class="nav-link">
-                        <i class="nav-icon fas fa-stream"></i>
+                        <i class="nav-icon far fa-calendar-alt"></i>
                         <p>
                             Jadwal Kereta
                         </p>
@@ -58,7 +58,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="datatiket.php" class="nav-link">
-                        <i class="nav-icon fas fa-calendar-plus"></i>
+                        <i class="nav-icon fas fa-ticket-alt"></i>
                         <p>
                             Data Tiket
                         </p>
