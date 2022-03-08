@@ -16,7 +16,7 @@ function tambah($data)
     $idk = htmlspecialchars($data["id_kereta"]);
     $idu = htmlspecialchars($data["id_user"]);
     $nop = htmlspecialchars($data["no_pesanan"]);
-    $nod = htmlspecialchars($data["no_duduk"]);
+    $nod = " ";
     $jumlah = htmlspecialchars($data["jumlah"]);
     $tangggalb = htmlspecialchars($data["tanggal_berangkat"]);
     $stasiunal = htmlspecialchars($data["stasiun_awal"]);

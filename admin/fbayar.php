@@ -5,8 +5,11 @@ function update($data)
     $harga = $data["hargatotal"];
     $pesan = $data["no_pesanan"];
     $uid = $data["userid"];
+    $nod = htmlspecialchars($data["no_duduk"]);
     $query = "UPDATE tiket SET harga = '$harga' WHERE id_user= $uid AND no_pesanan = $pesan";
+    $query2 = "UPDATE tiket SET no_duduk = '$nod' WHERE id_user= $uid AND no_pesanan = $pesan";
     mysqli_query($connect, $query);
+    mysqli_query($connect, $query2);
     return mysqli_affected_rows($connect);
 }
 function updategambar($data)

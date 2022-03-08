@@ -13,6 +13,12 @@ $query2 = mysqli_query($connect, "SELECT s.no_pesanan, t.jumlah, k.harga_ker, k.
 $tiket = mysqli_fetch_assoc($query2);
 $query = mysqli_query($connect, "SELECT * FROM user WHERE id_user=$id");
 $user = mysqli_fetch_assoc($query);
+$query9 = mysqli_query($connect, "SELECT max(no_duduk) as duduk FROM tiket AS t INNER JOIN tiket_sementara AS s ON t.id_kereta= s.id_kereta2");
+$data = mysqli_fetch_array($query9);
+$kodeBarang = $data['duduk'];
+$urutan = (int)$kodeBarang;
+$urutan++;
+$kodeBarang = sprintf("%01s", $urutan);
 if (isset($_POST["submit"])) {
     if (update($_POST) > 0) {
         echo "<script>alert('data berhasil ditambahkan');
@@ -232,6 +238,7 @@ if (isset($_POST["submit"])) {
                                             ?>
                                             <td>Total Harga</td>
                                             <td>: Rp <?= number_format($harga, "0", "", ".");  ?></td>
+                                            <input type="hidden" name="no_duduk" value="<?= $kodeBarang ?>">
                                             <input type="hidden" value="<?= $harga ?>" name="hargatotal">
                                             <input type="hidden" name="no_pesanan" value="<?= $tiket["no_pesanan"] ?>">
                                             <input type="hidden" name="userid" id="userid" value="<?= $id ?>">

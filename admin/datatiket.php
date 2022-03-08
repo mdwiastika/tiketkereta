@@ -9,7 +9,7 @@ if ($_SESSION["role"] == "user") {
 $id = $_SESSION["uid"];
 include_once "connect.php";
 include_once "ftiket.php";
-$tiket = tiket("SELECT * FROM tiket AS t INNER JOIN jadwal AS j ON t.id_kereta= j.id_kereta INNER JOIN kereta AS k ON k.id_ker= t.id_kereta");
+$tiket = tiket("SELECT * FROM tiket AS t INNER JOIN jadwal AS j ON t.id_kereta= j.id_kereta INNER JOIN kereta AS k ON k.id_ker= t.id_kereta WHERE t.id_user= $id");
 ?>
 <!DOCTYPE html>
 <html lang="en">
