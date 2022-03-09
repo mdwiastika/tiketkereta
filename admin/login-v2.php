@@ -76,10 +76,10 @@ if (isset($_POST["login"])) {
             </div>
           </div>
           <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Password" name="password">
+            <input type="password" class="form-control" placeholder="Password" name="password" id="myPassword">
             <div class="input-group-append">
               <div class="input-group-text">
-                <span class="fas fa-lock"></span>
+                <span class="fas fa-lock" onclick="myFunction()"></span>
               </div>
             </div>
           </div>
@@ -110,6 +110,16 @@ if (isset($_POST["login"])) {
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.min.js"></script>
+  <script>
+    function myFunction() {
+      var x = document.getElementById("myPassword");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+  </script>
 </body>
 
 </html>

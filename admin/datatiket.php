@@ -299,7 +299,7 @@ if ($_SESSION["role"] == "user") {
                                                 <td><?= $data["stasiun_awal"]; ?>/ <?= $data["stasiun_akhir"]; ?></td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a class="btn btn-danger " href="hapus.php?id=<?= $data["id_tik"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
+                                                        <a class="btn btn-danger " href="hapushistory.php?id=<?= $data["id_tik"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
                                                     </div>
                                                 </td>
                                             </tr>
