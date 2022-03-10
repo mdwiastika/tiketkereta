@@ -1,15 +1,18 @@
 <?php
+include_once "fdatatk.php";
+include_once "connect.php";
 session_start();
 if (!isset($_SESSION["login"])) {
-  header("location: login-v2.php");
+  header("location: ../user/login.php");
 }
-if ($_SESSION["role"] == "user") {
-  header("location: datatiket.php");
+$databarang = barang("SELECT b.id,b.nama, b.stok,b.harga,k.name, b.image
+FROM barang AS b
+INNER JOIN kategori AS k
+ON b.kategori_id = k.id");
+
+if (isset($_POST["cari"])) {
+  $databarang = cari($_POST["keyword"]);
 }
-$id = $_SESSION["uid"];
-include_once "connect.php";
-include_once "fkereta.php";
-$kereta = kereta("SELECT * FROM kereta")
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,9 +29,6 @@ $kereta = kereta("SELECT * FROM kereta")
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
   <link rel="stylesheet" href="image.css">
-  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -189,47 +189,58 @@ $kereta = kereta("SELECT * FROM kereta")
         </div>
         <!-- /.row -->
 
-        <h3><a class="btn btn-info mt-3 mb-3 ml-4" href="tambahkereta.php" role="button" style="font-family: roboto; font-size: large;"><i class="fas fa-plus"></i> Tambah Kereta</a></h3>
+        <h3><a class="btn btn-info mt-3 mb-3 ml-4" href="tambahbarang.php" role="button" style="font-family: roboto; font-size: large;"><i class="fas fa-plus"></i> Tambah Barang</a></h3>
 
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Data Kereta</h3>
+                <h3 class="card-title" style="font-family: roboto;">DATA BARANG</h3>
+
+                <form class="form-inline my-2 my-lg-0 float-right" action="" method="POST">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Cari Nama atau ID" aria-label="Search" autofocus name="keyword" autocomplete="off">
+                  <button class="btn btn-outline-info my-2 my-sm-0" type="submit" name="cari" style="font-family: inter;">Search</button>
+                </form>
               </div>
               <!-- /.card-header -->
-              <div class="card-body">
-                <table id="example1" class="table table-striped">
+              <div class="card-body table-responsive p-0 card-body table-responsive table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-head-fixed text-nowrap" style="font-family: roboto;">
                   <thead>
-                    <tr>
+                    <tr style="font-size: larger;">
                       <th>No</th>
                       <th>Nama</th>
-                      <th>Kelas</th>
+                      <th>Stok</th>
                       <th>Harga</th>
-                      <th>Kapasitas</th>
+                      <th>Kategori</th>
+                      <th>Gambar</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
                     $a = 1;
-                    foreach ($kereta as $data) :
                     ?>
+                    <?php
+                    foreach ($databarang as $data) :
+                    ?>
+
                       <tr>
                         <td><?= $a ?></td>
-                        <td><?= $data["nama_ker"] ?></td>
-                        <td><?= $data["kelas_ker"] ?></td>
-                        <td><?= $data["harga_ker"] ?></td>
-                        <td><?= $data["kapasitas"] ?></td>
+                        <td><?= $data["nama"]; ?></td>
+                        <td><?= $data["stok"]; ?></td>
+                        <td><span class="tag tag-success"><?= $data["harga"] ?></span></td>
+                        <td><?= $data["name"] ?></td>
+                        <td><img style="max-width: 100px;" src="img/<?= $data['image'] ?>"></td>
                         <td>
-                          <div class="btn-group">
-                            <a class="btn btn-primary mr-1" href="ubahkereta.php?id=<?= $data["id_ker"]; ?>" role="button"><i class="fas fa-edit"></i></a>
-                            <a class="btn btn-danger " href="hapuskereta.php?id=<?= $data["id_ker"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
+                          <div class="btn-group"><a class="btn btn-primary mr-1" href="ubahdata.php?id=<?= $data["id"]; ?>" role="button"><i class="fas fa-edit"></i></a>
+                            <a class="btn btn-danger " href="hapus.php?id=<?= $data["id"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
                           </div>
                         </td>
                       </tr>
-                    <?php
+                      <?php
                       $a++;
+                      ?>
+                    <?php
                     endforeach;
                     ?>
                   </tbody>
@@ -260,40 +271,10 @@ $kereta = kereta("SELECT * FROM kereta")
   <script src="plugins/jquery/jquery.min.js"></script>
   <!-- Bootstrap 4 -->
   <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="plugins/datatables/jquery.dataTables.min.js"></script>
-  <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-  <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-  <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-  <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-  <script src="plugins/jszip/jszip.min.js"></script>
-  <script src="plugins/pdfmake/pdfmake.min.js"></script>
-  <script src="plugins/pdfmake/vfs_fonts.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.min.js"></script>
   <!-- AdminLTE for demo purposes -->
-  <script>
-    $(function() {
-      $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
-    });
-  </script>
+  <script src="dist/js/demo.js"></script>
 </body>
 
 </html>

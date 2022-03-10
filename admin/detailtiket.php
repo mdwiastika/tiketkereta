@@ -3,13 +3,23 @@ session_start();
 if (!isset($_SESSION["login"])) {
     header("location: login-v2.php");
 }
+$id = $_SESSION["uid"];
+$id_tik = $_GET["id"];
 include_once "connect.php";
 include_once "ftiket.php";
-if ($_SESSION["role"] == "user") {
-    $id = $_SESSION["uid"];
-    $tiket = tiket("SELECT * FROM tiket AS t INNER JOIN jadwal AS j ON t.id_kereta= j.id_kereta INNER JOIN kereta AS k ON k.id_ker= t.id_kereta WHERE t.id_user= $id");
-} else {
-    $tiket = tiket("SELECT * FROM tiket AS t INNER JOIN jadwal AS j ON t.id_kereta= j.id_kereta INNER JOIN kereta AS k ON k.id_ker= t.id_kereta");
+$data = tiket("SELECT * FROM tiket WHERE id_tik= $id_tik");
+$query = mysqli_query($connect, "SELECT * FROM user WHERE id_user=$id");
+$user = mysqli_fetch_assoc($query);
+$query2 = mysqli_query($connect, "SELECT * FROM tiket AS t INNER JOIN kereta AS k ON t.id_kereta=k.id_ker WHERE t.id_tik= $id_tik");
+$tiket = mysqli_fetch_assoc($query2);
+if (isset($_POST["submit"])) {
+    if (update($_POST) > 0) {
+        echo "<script>alert('data berhasil ditambahkan');
+        document.location.href = 'buktibayar.php';</script> ";
+    } else {
+        echo "<script>alert('data gagal ditambahkan');
+        document.location.href = 'pembayaran.php';</script> ";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -174,77 +184,8 @@ if ($_SESSION["role"] == "user") {
 
         <!-- Main Sidebar Container -->
         <?php
-        if ($_SESSION["role"] == "user") {
+        include_once "sidebar.php";
         ?>
-            <aside class="main-sidebar sidebar-dark-primary elevation-4">
-                <!-- Brand Logo -->
-                <a href="index3.html" class="brand-link">
-                    <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                    <span class="brand-text font-weight-light">AdminMarCell</span>
-                </a>
-
-                <!-- Sidebar -->
-                <div class="sidebar">
-                    <!-- Sidebar user panel (optional) -->
-                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                        <div class="image">
-                            <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-                        </div>
-                        <div class="info">
-                            <a href="#" class="d-block">Marcel Dwi Astika</a>
-                        </div>
-                    </div>
-
-                    <!-- SidebarSearch Form -->
-                    <!-- Sidebar Menu -->
-                    <nav class="mt-2">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                            <li class="nav-item">
-                                <a href="tambahtiket.php" class="nav-link">
-                                    <i class="nav-icon fas fa-subway"></i>
-                                    <p>
-                                        Pesan Tiket
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="datatiket.php" class="nav-link">
-                                    <i class="nav-icon fas fa-ticket-alt"></i>
-                                    <p>
-                                        Data Tiket
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item active">
-                                <a href="register-v3.php" class="nav-link">
-                                    <i class="nav-icon fas fa-user-plus"></i>
-                                    <p>
-                                        Registrasi
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item active">
-                                <a href="logout.php" class="nav-link">
-                                    <i class="nav-icon fas fa-sign-out-alt"></i>
-                                    <p>
-                                        Log Out
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- /.sidebar-menu -->
-                </div>
-                <!-- /.sidebar -->
-            </aside>
-        <?php
-        } else {
-            include_once "sidebar.php";
-        }
-        ?>
-
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -258,9 +199,6 @@ if ($_SESSION["role"] == "user") {
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
-
-                <h3><a class="btn btn-info mt-3 mb-3 ml-4" href="tambahtiket.php" role="button" style="font-family: roboto; font-size: large;"><i class="fas fa-plus"></i> Tambah Tiket</a></h3>
-
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -269,97 +207,38 @@ if ($_SESSION["role"] == "user") {
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <?php
-                                if ($_SESSION["role"] == "admin") {
-                                ?>
-                                    <table id="example1" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Kereta</th>
-                                                <th>id user</th>
-                                                <th>Nomer Pesanan</th>
-                                                <th>Jumlah (Harga)</th>
-                                                <th>Tanggal Berangkat</th>
-                                                <th>Berangkat/Sampai</th>
-                                                <th>Stasiun Awal/Akhir</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                <form action="" method="POST">
+                                    <table style="margin-bottom: 10px;">
+                                        <tr>
+                                            <td>Nama</td>
+                                            <td>: <?= $user["nama"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>: <?= $user["email"] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nama Kereta</td>
+                                            <td>: <?= $tiket["nama_ker"]; ?> (<?= $tiket["kelas_ker"] ?>)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jumlah Tiket</td>
+                                            <td>: <?= $tiket["jumlah"] ?></td>
+                                        </tr>
+                                        <tr>
                                             <?php
-                                            $a = 1;
-                                            foreach ($tiket as $data) :
+                                            $harga = $tiket["jumlah"] * $tiket["harga_ker"]
                                             ?>
-                                                <tr>
-                                                    <td><?= $a ?></td>
-                                                    <td><?= $data["nama_ker"] ?></td>
-                                                    <td><?= $data["id_user"] ?></td>
-                                                    <td><?= $data["no_pesanan"] ?></td>
-                                                    <td>(<?= $data["jumlah"] ?>) Rp <?= number_format($data["harga"]) ?></td>
-                                                    <td><?= $data["tanggal_berangkat"] ?></td>
-                                                    <td><?= $data["berangkat"] ?>/<?= $data["sampai"] ?></td>
-                                                    <td><?= $data["stasiun_awal"]; ?>/ <?= $data["stasiun_akhir"]; ?></td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-primary mr-1" href="detailtiket.php?id=<?= $data["id_tik"]; ?>" role="button"><i class="fas fa-edit"></i></a>
-                                                            <a class="btn btn-danger " href="hapushistory.php?id=<?= $data["id_tik"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php
-                                                $a++;
-                                            endforeach;
-                                            ?>
-                                        </tbody>
+                                            <td>Total Harga</td>
+                                            <td>: Rp <?= number_format($harga, "0", "", ".");  ?></td>
+                                            <input type="hidden" name="no_duduk" value="<?= $kodeBarang ?>">
+                                            <input type="hidden" value="<?= $harga ?>" name="hargatotal">
+                                            <input type="hidden" name="no_pesanan" value="<?= $tiket["no_pesanan"] ?>">
+                                            <input type="hidden" name="userid" id="userid" value="<?= $id ?>">
+                                        </tr>
                                     </table>
-                                <?php
-                                } else {
-                                ?>
-                                    <table id="example1" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Kereta</th>
-                                                <th>Nomer Pesanan</th>
-                                                <th>Nomer Duduk</th>
-                                                <th>Jumlah (Harga)</th>
-                                                <th>Tanggal Berangkat</th>
-                                                <th>berangkat/sampai</th>
-                                                <th>Stasiun Awal/Akhir</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $a = 1;
-                                            foreach ($tiket as $data) :
-                                            ?>
-                                                <tr>
-                                                    <td><?= $a ?></td>
-                                                    <td><?= $data["nama_ker"] ?></td>
-                                                    <td><?= $data["no_pesanan"] ?></td>
-                                                    <td><?= $data["no_duduk"] ?></td>
-                                                    <td>(<?= $data["jumlah"] ?>) Rp <?= number_format($data["harga"]) ?></td>
-                                                    <td><?= $data["tanggal_berangkat"] ?></td>
-                                                    <td><?= $data["berangkat"] ?>/<?= $data["sampai"] ?></td>
-                                                    <td><?= $data["stasiun_awal"]; ?>/ <?= $data["stasiun_akhir"]; ?></td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-primary mr-1" href="detailtiket.php?id=<?= $data["id_tik"]; ?>" role="button"><i class="fas fa-edit"></i></a>
-                                                            <a class="btn btn-danger " href="hapushistory.php?id=<?= $data["id_tik"]; ?>" role="button" onclick="return confirm('Yakin ingin menghapus?')"><i class="far fa-trash-alt"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php
-                                                $a++;
-                                            endforeach;
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                <?php
-                                }
-                                ?>
+                                    <button type="submit" class="btn btn-primary" name="submit">Lanjutkan Pembayaran</button>
+                                </form>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -401,25 +280,6 @@ if ($_SESSION["role"] == "user") {
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
-    </script>
 </body>
 
 </html>

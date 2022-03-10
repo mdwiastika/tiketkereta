@@ -64,3 +64,12 @@ function registrasi($data)
     mysqli_query($connect, "INSERT INTO user VALUES('','$username','$email', '$password', '$role')");
     return mysqli_affected_rows($connect);
 }
+function ubah($data)
+{
+    global $connect;
+    $id_kereta = $data["kereta"];
+    $kuantitas = $data["kuantitas"];
+    $query = "UPDATE kereta SET kapasitas = '$kuantitas' WHERE id_ker= $id_kereta";
+    mysqli_query($connect, $query);
+    return mysqli_affected_rows($connect);
+}
