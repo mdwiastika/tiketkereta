@@ -203,7 +203,7 @@ if (isset($_POST["submit"])) {
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Data Kereta</h3>
+                                <h3 class="card-title">Detail Tiket</h3>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
@@ -237,7 +237,6 @@ if (isset($_POST["submit"])) {
                                             <input type="hidden" name="userid" id="userid" value="<?= $id ?>">
                                         </tr>
                                     </table>
-                                    <button type="submit" class="btn btn-primary" name="submit">Lanjutkan Pembayaran</button>
                                 </form>
                             </div>
                             <!-- /.card-body -->
